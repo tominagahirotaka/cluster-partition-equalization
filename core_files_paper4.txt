@@ -1,0 +1,82 @@
+# Paper 4: files needed to reproduce the figures, tables and numbers (2026-11-19, author's instruction
+# "公開パッケージの準備を進めてください"). Same format as paper3/core_files_paper3.txt.
+# Paths are relative to the project root; shell globs are allowed. "gen" lines are the scripts that produced the data,
+# "out" lines the data, "fig"/"agg" lines the scripts that draw or aggregate. scripts/paper4_core_files_check.py
+# expands the globs, checks that every file exists and writes paper4/core_files_paper4_manifest.tsv (path, bytes,
+# sha256). Inputs of the aggregate and figure scripts were found by tracing the files they open (2026-11-19);
+# the other outputs are those named in the source comments of the manuscript and the supplement.
+# Not listed: logs, job lists (they name the hosts), exploratory outputs (plan1_*, plan2_*, pd_*, map_test/,
+# fold_saddle_v1/), and the repeated sweeps of rebalance_order/ that are not canonical.
+
+## Common: reduced system (Sec. II A, B)
+gen scripts/mcluster_reduced.py
+
+## Sec. III, Fig. 1, Table I, Supplement S1: map of the reduced branches
+gen scripts/universality_map.py
+gen scripts/universality_map_launch.py
+gen scripts/universality_map_ends.py
+out analysis/universality/map/e*_34-33-33.json
+out analysis/universality/map/e*_40-30-30.json
+out analysis/universality/map/e*_50-25-25.json
+out analysis/universality/map_ends/*.json
+
+## Sec. II C, IV B, Fig. 3, Supplement S2 (exits): stable ranges of fixed partitions
+gen scripts/partition_flow.py
+gen scripts/pf_avx2.sh
+out analysis/universality/partition_flow/*.json
+agg scripts/partition_flow_summary.py
+out analysis/universality/partition_flow_summary.json
+gen scripts/rebalance_order.py
+agg scripts/collect_order_canonical.py
+out analysis/universality/rebalance_order_canonical/*.json
+agg scripts/partition_flow_order_summary.py
+out analysis/universality/partition_flow_order_summary.json
+
+## Sec. IV, Table II, Figs. 2 and 4, Supplement S2: sweeps of the full system
+gen scripts/rebalance_sweep.py
+gen scripts/rebalance_variants.py
+out analysis/universality/rebalance/*.json
+out analysis/universality/rebalance_var/*.json
+gen scripts/hysteresis_sweep.py
+gen scripts/hysteresis_variants.py
+out analysis/universality/hysteresis/*.json
+out analysis/universality/hysteresis_var/*.json
+gen scripts/internal_end_full.py
+out analysis/universality/internal_end_full/*.json
+gen scripts/escape_prepare.py
+gen scripts/escape_runs.py
+out analysis/universality/escape/*.json
+out analysis/universality/escape/*.npz
+
+## Sec. V, Supplement S3, S4: strong-coupling end, beyond it, breaks
+gen scripts/hysteresis_extend.py
+gen scripts/hysteresis_new_states.py
+gen scripts/balanced_strong_end.py
+gen scripts/strong_end_sweep.py
+gen scripts/end_arclength.py
+gen scripts/period2_check.py
+gen scripts/beyond_end_detail.py
+gen scripts/break_statistics.py
+gen scripts/break_membership.py
+gen scripts/kick_test.py
+gen scripts/nonperiodic_state.py
+gen scripts/transient_detail.py
+out analysis/universality/hysteresis_ext/*.json
+out analysis/universality/hysteresis_ext/*.npz
+gen scripts/internal_trace.py
+out analysis/universality/internal_trace.json
+
+## Sec. VI: folds
+gen scripts/fold_saddle_test.py
+gen scripts/fold_saddle_full.py
+out analysis/universality/fold_saddle/*.json
+out analysis/universality/fold_saddle_full/*.json
+
+## Aggregates and figures
+agg scripts/paper4_aggregates.py
+out analysis/paper4_figs/aggregates.json
+fig scripts/plot_paper4_figs.py
+out analysis/paper4_figs/fig_map.pdf
+out analysis/paper4_figs/fig_sweep.pdf
+out analysis/paper4_figs/fig_flow.pdf
+out analysis/paper4_figs/fig_rest.pdf
